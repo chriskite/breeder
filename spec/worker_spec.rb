@@ -43,5 +43,38 @@ module Breeder
       end
     end
 
+    describe '#run' do
+
+      class MyWorker < Worker
+        attr_reader :value
+        def initialize
+          @value = 0
+        end
+        def stop!
+          'stopped'
+        end
+        def do_work
+          @value += 1
+          request_stop if @value >= 3
+        end
+      end
+
+      it 'does work until told to stop' do
+        worker = MyWorker.new
+        worker.run.should == 'stopped'
+        worker.value.should == 3
+      end
+      context 'when the user has specified a naptime' do
+        it 'takes the specified naptime in between loops' do
+          worker = MyWorker.new
+          now = Time.now()
+          worker.run(1).should == 'stopped'
+          worker.value.should == 3
+          and_then = Time.now
+          (and_then - now).should >= 3
+        end
+      end
+    end
+
   end
 end

@@ -19,5 +19,13 @@ module Breeder
       raise NotImplementedError
     end
 
+    def run(naptime = nil)
+      until stop?
+        do_work
+        sleep(naptime) unless naptime.nil?
+      end
+      stop!
+    end
+
   end
 end
