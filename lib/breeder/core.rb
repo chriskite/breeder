@@ -23,10 +23,9 @@ module Breeder
       raise ArgumentError("No block supplied") if block.nil?
       worker = Breeder::Worker.new
       worker.__metaclass__.class_eval do
-        def do_work
-          block.call
-        end
+        define_method(:do_work, block)
       end
+      @worker = worker
     end
 
   end
