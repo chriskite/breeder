@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'breeder/core'
+require 'breeder/watcher'
 
 module Breeder 
   # Create a Breeder::Core and take a block to configure it
@@ -9,6 +10,7 @@ module Breeder
     core
   end
 
+  # Configure and run a Breeder::Core
   def self.breed(&block)
     core = Breeder::Core.new
     yield core
