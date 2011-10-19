@@ -4,11 +4,11 @@ module Breeder
   # spawn and reap more threads
   class Watcher
 
-    def spawn?
+    def spawn?(num_workers)
       raise NotImplementedError
     end
 
-    def reap?
+    def reap?(num_workers)
       raise NotImplementedError
     end
 

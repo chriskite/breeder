@@ -1,8 +1,20 @@
 module Breeder
   class Core
+    # the poll interval in seconds
+    attr_accessor :interval
+
+    # an instance with spawn? and reap? methods to determine when to spawn and reap
     attr_reader :watcher
+
+    # an instance of Breeder::Worker
     attr_reader :worker
     
+    def initialize
+      @workers = []
+      @threads = []
+      self.interval = 5
+    end
+
     def watcher=(watcher)
       unless watcher.respond_to?(:spawn?) && watcher.respond_to?(:reap?)
         raise "Watcher must implement spawn? and reap?"
@@ -26,6 +38,16 @@ module Breeder
         define_method(:do_work, block)
       end
       @worker = worker
+    end
+
+    private
+
+    def spawn!
+
+    end
+
+    def reap!
+
     end
 
   end
