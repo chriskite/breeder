@@ -1,12 +1,22 @@
 module Breeder
-  class Worker < Thread
+  class Worker
+    attr_accessor :should_stop
 
     def stop?
-      #TODO
+      @should_stop
     end
 
     def stop!
       #TODO
+    end
+
+    def request_stop
+      @should_stop = true
+    end
+
+    # User-defined worker should override this
+    def do_work
+      raise NotImplementedError
     end
 
   end

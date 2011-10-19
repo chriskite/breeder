@@ -21,5 +21,38 @@ module Breeder
         end
       end
     end
+
+    describe '#worker=' do
+      context 'when the argument is not a valid worker' do
+        it 'raises an error' do
+          lambda { @core.worker= 42 }.should raise_error
+        end
+      end
+
+      context 'when the argument is a valid worker' do
+        it 'sets the worker' do
+          test_worker = Breeder::Worker.new
+          @core.worker = test_worker
+          @core.worker.should == test_worker
+        end
+      end
+    end
+
+    describe '#task' do
+      context 'when no block is supplied' do
+        it 'raises an error' do
+          lambda { @core.task }.should raise_error
+        end
+      end
+
+      context 'when a block of work is supplied' do
+        it 'creates a worker with the block as its workload' do
+          task_done = false
+          @core.task { task_done = true }
+          @core.worker.do_work
+          task_done.should == true
+        end
+      end
+    end
   end
 end
