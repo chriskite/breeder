@@ -7,23 +7,18 @@ module Breeder
     end
 
     def stop!
-      #TODO
-    end
-
-    def request_stop
       @should_stop = true
-    end
-
-    # User-defined worker should override this
-    def do_work
-      raise NotImplementedError
     end
 
     def run
       until stop?
         do_work
       end
-      stop!
+    end
+
+    # User-defined worker should override this
+    def do_work
+      raise NotImplementedError
     end
 
   end

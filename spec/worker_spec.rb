@@ -8,30 +8,22 @@ module Breeder
     describe '#stop?' do
       context 'if the worker should stop' do
         it 'returns true' do
-          worker.should_stop = true
+          worker.stop!
           worker.stop?.should be_true
         end
       end
       context 'if the worker should not stop' do
         it 'returns false' do
           worker.stop?.should be_false
-          worker.should_stop = false
-          worker.stop?.should be_false
         end
       end
     end
 
-    describe '#request_stop' do
-      it 'sets @should_stop' do
-        worker.should_stop.should be_false
-        worker.request_stop
-        worker.should_stop.should be_true
-      end
-    end
-
     describe '#stop!' do
-      it 'stops the worker cleanly' do
-        pending
+      it 'makes #stop? return true' do
+        worker.stop?.should be_false
+        worker.stop!
+        worker.stop?.should be_true
       end
     end
 
@@ -50,18 +42,15 @@ module Breeder
         def initialize
           @value = 0
         end
-        def stop!
-          'stopped'
-        end
         def do_work
           @value += 1
-          request_stop if @value >= 3
+          stop! if @value >= 3
         end
       end
 
       it 'does work until told to stop' do
         worker = MyWorker.new
-        worker.run.should == 'stopped'
+        worker.run
         worker.value.should == 3
       end
     end

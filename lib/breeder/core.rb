@@ -6,9 +6,6 @@ module Breeder
     # an instance with spawn? and reap? methods to determine when to spawn and reap
     attr_reader :watcher
 
-    # an instance of Breeder::Worker
-    attr_reader :worker
-
     # number of workers to start with
     attr_accessor :initial_workers
     
@@ -27,12 +24,9 @@ module Breeder
       @watcher = watcher
     end
 
-    def worker=(worker)
-      unless worker.is_a?(Breeder::Worker)
-        raise "Worker must inherit from Breeder::Worker"
-      end
-      
-      @worker = worker
+    def worker_factory(&block)
+      raise "No block supplied to worker_factory" unless !!block
+      @worker_factory = block
     end
 
     def task(&block)
@@ -41,30 +35,45 @@ module Breeder
       worker.__metaclass__.class_eval do
         define_method(:do_work, block)
       end
-      @worker = worker
+      worker_factory { worker }
     end
 
     def run
       # start the workers
-      @initial_workers.times { spawn! }
+      self.initial_workers.times { spawn! }
+
+      # catch Ctrl+C and cleanup
+      trap('INT') do
+        puts 'INTERRUPT caught, killing threads and exiting...'
+        @threads.each { |thread| thread.kill }
+      end
 
       # wait for the workers to finish
       @threads.each { |thread| thread.join }
     end
 
+    def create_worker
+      raise "No worker factory specified" unless !!@worker_factory
+      worker = @worker_factory.call
+      unless [:run, :stop!, :stop?].all? { |method| worker.respond_to?(method) }
+        raise "object from worker factory doesn't quack like a worker"
+      end
+      worker
+    end
+
     private
 
     def spawn!
-      worker = @worker.dup
+      worker = create_worker
       @workers << worker
-      @threads << Threw.new { worker.run }
+      @threads << Thread.new { worker.run }
     end
 
     def reap!
       if @threads.size >= 1
         thread = @threads.pop
         worker = @workers.pop
-        worker.request_stop
+        worker.stop!
         sleep 1
         thread.kill
       end

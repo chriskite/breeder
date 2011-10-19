@@ -32,8 +32,8 @@ module Breeder
       context 'when the argument is a valid worker' do
         it 'sets the worker' do
           test_worker = Breeder::Worker.new
-          @core.worker = test_worker
-          @core.worker.should == test_worker
+          @core.worker_factory { test_worker }
+          @core.create_worker.should == test_worker
         end
       end
     end
@@ -49,7 +49,7 @@ module Breeder
         it 'creates a worker with the block as its workload' do
           task_done = false
           @core.task { task_done = true }
-          @core.worker.do_work
+          @core.create_worker.do_work
           task_done.should == true
         end
       end
