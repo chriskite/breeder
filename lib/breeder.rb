@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'breeder/core'
 require 'breeder/watcher'
+require 'breeder/worker'
 
 module Breeder 
   # Create a Breeder::Core and take a block to configure it
