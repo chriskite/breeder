@@ -15,6 +15,7 @@ module Breeder
 
       context 'when the argument is a valid watcher' do
         it 'sets the watcher' do
+          pending
           watcher = Breeder::Watcher.new
           @core.watcher = watcher
           @core.watcher.should == watcher
@@ -31,6 +32,7 @@ module Breeder
 
       context 'when the argument is a valid worker' do
         it 'sets the worker' do
+          pending
           test_worker = Breeder::Worker.new
           @core.worker_factory { test_worker }
           @core.create_worker.should == test_worker
@@ -47,6 +49,7 @@ module Breeder
 
       context 'when a block of work is supplied' do
         it 'creates a worker with the block as its workload' do
+          pending
           task_done = false
           @core.task { task_done = true }
           @core.create_worker.do_work

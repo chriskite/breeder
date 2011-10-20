@@ -1,10 +1,11 @@
 require 'rubygems'
-require 'bundler/setup'
 require 'metaclass'
+require 'beanstalk-client'
 require 'breeder/breeding_strategy'
 require 'breeder/core'
 require 'breeder/watcher'
 require 'breeder/worker'
+require 'breeder/watchers/beanstalk'
 
 module Breeder 
   # Create a Breeder::Core and take a block to configure it
