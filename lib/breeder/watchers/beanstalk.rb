@@ -1,12 +1,10 @@
 module Breeder
   module Watchers
-    class Beanstalk
+    class Beanstalk < Watcher
 
-      def initialize(host, tube, spawn, reap)
+      def initialize(conn, tube, spawn, reap)
         raise 'Invalid limits; Expected spawn >= reap' if spawn < reap
-        @beanstalk = ::Beanstalk::Pool.new(host)
-        @beanstalk.use(tube)
-        @tube, @spawn, @reap = tube, spawn, reap
+        @conn, @tube, @spawn, @reap = conn, tube, spawn, reap
       end
 
       def spawn?
@@ -18,7 +16,7 @@ module Breeder
       end
 
       def jobs_ready
-        @beanstalk.stats_tube(@tube)['current-jobs-ready']
+        @conn.stats_tube(@tube)['current-jobs-ready']
       end
 
     end
