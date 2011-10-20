@@ -6,15 +6,19 @@ module Breeder
         raise 'Invalid limits; Expected spawn >= reap' if spawn < reap
         @beanstalk = ::Beanstalk::Pool.new(host)
         @beanstalk.use(tube)
-        @spawn, @reap = spawn, reap
+        @tube, @spawn, @reap = tube, spawn, reap
       end
 
       def spawn?
-        #TODO
+        @spawn < jobs_ready
       end
 
       def reap?
-        #TODO
+        @reap > jobs_ready
+      end
+
+      def jobs_ready
+        @beanstalk.stats_tube(@tube)['current-jobs-ready']
       end
 
     end
