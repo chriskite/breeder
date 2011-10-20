@@ -37,7 +37,7 @@ module Breeder
     end
 
     def init_strategy
-      @strategy = Breeder::BreedingStrategy::Threads.new(@worker_factory, initial_workers)
+      @strategy = Breeder::BreedingStrategy::Forks.new(@worker_factory, initial_workers)
 
       # catch Ctrl+C and cleanup
       trap('INT') do
