@@ -10,8 +10,6 @@ module Breeder
     attr_accessor :initial_workers
     
     def initialize
-      @workers = []
-      @threads = []
       self.interval = 5
       self.initial_workers = 4
     end
@@ -38,45 +36,31 @@ module Breeder
       worker_factory { worker }
     end
 
-    def run
-      # start the workers
-      self.initial_workers.times { spawn! }
+    def init_strategy
+      @strategy = Breeder::BreedingStrategy::Threads.new(@worker_factory, initial_workers)
 
       # catch Ctrl+C and cleanup
       trap('INT') do
-        puts 'INTERRUPT caught, killing threads and exiting...'
-        @threads.each { |thread| thread.kill }
+        puts 'INTERRUPT caught, killing workers and exiting...'
+        @strategy.stop!
+        @polling_thread.kill rescue nil
       end
-
-      # wait for the workers to finish
-      @threads.each { |thread| thread.join }
     end
 
-    def create_worker
-      raise "No worker factory specified" unless !!@worker_factory
-      worker = @worker_factory.call
-      unless [:run, :stop!, :stop?].all? { |method| worker.respond_to?(method) }
-        raise "object from worker factory doesn't quack like a worker"
+    def run
+      # setup the breeding strategy
+      init_strategy
+
+      # start the workers
+      @strategy.start!
+
+      @polling_thread = Thread.new do
+        # TODO polling 
+        loop do
+          sleep interval
+        end
       end
-      worker
-    end
-
-    private
-
-    def spawn!
-      worker = create_worker
-      @workers << worker
-      @threads << Thread.new { worker.run }
-    end
-
-    def reap!
-      if @threads.size >= 1
-        thread = @threads.pop
-        worker = @workers.pop
-        worker.stop!
-        sleep 1
-        thread.kill
-      end
+      @polling_thread.join
     end
 
   end

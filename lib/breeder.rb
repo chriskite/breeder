@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'metaclass'
+require 'breeder/breeding_strategy'
 require 'breeder/core'
 require 'breeder/watcher'
 require 'breeder/worker'
