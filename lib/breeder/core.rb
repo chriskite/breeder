@@ -1,6 +1,6 @@
 module Breeder
   class Core
-    # the poll interval in seconds
+    # the poll interval in seconds (default is 60)
     attr_accessor :interval
 
     # an instance with spawn? and reap? methods to determine when to spawn and reap
@@ -10,13 +10,13 @@ module Breeder
     attr_accessor :initial_workers
     
     def initialize
-      self.interval = 5
+      self.interval = 6
       self.initial_workers = 4
     end
 
     def watcher=(watcher)
-      unless watcher.respond_to?(:spawn?) && watcher.respond_to?(:reap?)
-        raise "Watcher must implement spawn? and reap?"
+      unless watcher.respond_to?(:check)
+        raise "Watcher must implement 'check' method"
       end
       
       @watcher = watcher
@@ -54,9 +54,20 @@ module Breeder
       # start the workers
       @strategy.start!
 
+      warn "No Watcher specified, will not spawn or reap workers" if @watcher.nil?
+
       @polling_thread = Thread.new do
-        # TODO polling 
         loop do
+          if !!@watcher
+            decision = @watcher.check(@strategy.num_workers)
+            if :spawn == decision
+              @strategy.spawn!
+              puts "Spawned worker, now running #{@strategy.num_workers} workers"
+            elsif :reap == decision
+              @strategy.reap!
+              puts "Reaped worker, now running #{@strategy.num_workers} workers"
+            end
+          end
           sleep interval
         end
       end

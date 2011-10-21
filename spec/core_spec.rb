@@ -15,27 +15,16 @@ module Breeder
 
       context 'when the argument is a valid watcher' do
         it 'sets the watcher' do
-          watcher = Breeder::Watcher.new
+          watcher = Breeder::Watcher::Beanstalk.new(mock('stalk'), 'tube', 8)
           @core.watcher = watcher
           @core.watcher.should == watcher
         end
       end
     end
 
-    describe '#worker=' do
-      context 'when the argument is not a valid worker' do
-        it 'raises an error' do
-          lambda { @core.worker= 42 }.should raise_error
-        end
-      end
-
-      context 'when the argument is a valid worker' do
-        it 'sets the worker' do
-          pending 'no create_watcher method'
-          test_worker = Breeder::Worker.new
-          @core.worker_factory { test_worker }
-          @core.create_worker.should == test_worker
-        end
+    describe '#worker_factory' do
+      it 'sets the worker factory' do
+        pending
       end
     end
 

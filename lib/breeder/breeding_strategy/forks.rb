@@ -8,6 +8,10 @@ module Breeder
         @initial_workers = initial_workers
       end
 
+      def num_workers
+        @children.size
+      end
+
       def start!
         @initial_workers.times { spawn! }
       end
@@ -38,6 +42,7 @@ module Breeder
             end
             trap('INT', 'DEFAULT')
             worker.run
+            Process.exit
           end
         end
         t.join
