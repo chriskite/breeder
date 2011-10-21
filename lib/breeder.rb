@@ -1,6 +1,6 @@
 require 'rubygems'
-require 'bundler/setup'
 require 'metaclass'
+require 'beanstalk-client'
 require 'breeder/breeding_strategy'
 require 'breeder/core'
 require 'breeder/watcher'

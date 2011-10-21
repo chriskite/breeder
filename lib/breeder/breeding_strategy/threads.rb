@@ -9,6 +9,10 @@ module Breeder
         @initial_workers = initial_workers
       end
 
+      def num_workers
+        @threads.size
+      end
+
       def start!
         @initial_workers.times { spawn! }
       end
