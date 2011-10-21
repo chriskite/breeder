@@ -13,7 +13,7 @@ module Breeder
         num = jobs_ready
         if !!@last_check && insufficient_progress?(num) && num_workers <= @max_workers
           decision = :spawn
-        elsif !!@last_check && num < 0.5 * @last_check
+        elsif !!@last_check && (num < 0.8 * @last_check || num <= 1)
           decision = :reap
         else
           decision = nil
