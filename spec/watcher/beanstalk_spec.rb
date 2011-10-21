@@ -22,13 +22,13 @@ module Breeder
       end
 
       describe '#check' do
-        context 'when there are more jobs than the last check' do
+        context 'when there was insufficient progress since the last check' do
           it 'returns true' do
             @mock_stalk.
               should_receive(:stats_tube).
               twice. 
               with('tube').
-              and_return({'current-jobs-ready' => 10},{'current-jobs-ready' => 12})
+              and_return({'current-jobs-ready' => 10},{'current-jobs-ready' => 10})
 
             breeder = Breeder::Watcher::Beanstalk.new(@mock_stalk,'tube',8)
             breeder.check(4)
