@@ -49,7 +49,7 @@ module Breeder
       end
 
       def reap!
-        if !@children.empty?
+        if @children.size > 1
           pid = @children.pop
           Process.kill('HUP', pid)
           sleep 1
