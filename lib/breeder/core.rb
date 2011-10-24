@@ -10,7 +10,7 @@ module Breeder
     attr_accessor :initial_workers
     
     def initialize
-      self.interval = 6
+      self.interval = 60
       self.initial_workers = 4
     end
 
