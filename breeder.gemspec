@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s|
   s.name = "breeder"
-  s.version = "0.0.5"
+  s.version = "0.0.6"
   s.authors = ["Chris Kite", "Scott Reis"]
   s.homepage = "http://www.github.com/chriskite/breeder"
   s.platform = Gem::Platform::RUBY
